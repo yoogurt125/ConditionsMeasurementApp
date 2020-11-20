@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:ignore="TextFields,HardcodedText">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+    />
+
+    <TextView
+        android:layout_marginTop="4dp"
+        android:layout_marginHorizontal="6dp"
+        android:id="@+id/label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Open bluetooth connection" />
+
+    <LinearLayout
+        android:layout_marginHorizontal="2dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:id="@+id/open"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Open" />
+
+        <Button
+            android:enabled="false"
+            android:layout_width="wrap_content"
+            android:layout_marginHorizontal="2dp"
+            android:id="@+id/send"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:text="Download data"
+            />
+
+
+    </LinearLayout>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/linechart"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_below="@+id/open" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+
+            android:layout_marginHorizontal="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/temperature_button"
+            android:text="temperature"
+            android:enabled="false">
+
+        </Button>
+        <Button
+            android:layout_marginHorizontal="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/humidity_button"
+            android:text="humidity"
+            android:enabled="false">
+
+        </Button>
+    </LinearLayout>
+
+
+</LinearLayout>
