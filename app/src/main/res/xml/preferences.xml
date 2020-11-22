@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Temperature Settings">
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:defaultValue="23"
+            android:key="max_limit_temperature"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Max temperature threshold" />
+
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+
+            android:defaultValue="19"
+            android:key="min_limit_temperature"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Min temperature threshold" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Humidity Settings">
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:defaultValue="60"
+            android:key="max_limit_humidity"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Max humidity threshold" />
+
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:digits="0123456789"
+            android:defaultValue="40"
+            android:key="min_limit_humidity"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Min humidity threshold" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

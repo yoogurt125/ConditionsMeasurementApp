@@ -4,16 +4,22 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -46,11 +52,13 @@ public class MainActivity extends AppCompatActivity {
     String dataAgregated;
     int[] temperature;
     int[] humidity;
+    int maxTempThreshold, minTempThreshold, maxHumidThreshold, minHumidThreshold;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.app_bar));
 
 
         Button openButton = (Button) findViewById(R.id.open);
@@ -59,9 +67,13 @@ public class MainActivity extends AppCompatActivity {
         Button sendButton = (Button) findViewById(R.id.send);
         myLabel = (TextView) findViewById(R.id.label);
 
+
         mLinechart = findViewById(R.id.linechart);
         mLinechart.setDragEnabled(true);
         mLinechart.setScaleEnabled(true);
+
+
+
         //Open Button
         openButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -265,6 +277,45 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId() ){
+            case R.id.settings:
+                Intent preferencesIntent = new Intent(this,PreferencesActivity.class);
+                startActivity(preferencesIntent);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String tempString;
+        tempString = sharedPreferences.getString("max_limit_temperature", "");
+        maxTempThreshold = Integer.parseInt(tempString);
+        tempString = sharedPreferences.getString("min_limit_temperature", "");
+        minTempThreshold = Integer.parseInt(tempString);
+        tempString = sharedPreferences.getString("max_limit_humidity", "");
+        maxHumidThreshold = Integer.parseInt(tempString);
+        tempString = sharedPreferences.getString("min_limit_humidity", "");
+        minHumidThreshold = Integer.parseInt(tempString);
+
+
+//        minTempThreshold = Integer.parseInt(sharedPreferences.getString("min_limit_temperature", ""));
+//        maxHumidThreshold = Integer.parseInt(sharedPreferences.getString("max_limit_humidity", ""));
+//        minHumidThreshold = Integer.parseInt(sharedPreferences.getString("max_limit_humidity", ""));
+
+    }
 }
+
 
 
