@@ -22,6 +22,8 @@ public class StatisticsActivity extends AppCompatActivity {
     TextView belowHumidTextView;
     TextView aboveTempTextView;
     TextView belowTempTextView;
+    TextView amplitudeTempTextView;
+    TextView amplitudeHumidTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,9 @@ public class StatisticsActivity extends AppCompatActivity {
         belowHumidTextView = findViewById(R.id.below_limit_humid);
         aboveTempTextView = findViewById(R.id.above_limit_temp);
         belowTempTextView = findViewById(R.id.below_limit_temp);
+        amplitudeTempTextView = findViewById(R.id.amplitude_temp);
+        amplitudeHumidTextView = findViewById(R.id.amplitude_humid);
+
         calculateStatistics();
 
     }
@@ -125,6 +130,8 @@ public class StatisticsActivity extends AppCompatActivity {
                  belowHumid++;
          }
          belowHumidTextView.setText("# below min temperature limit: " + String.valueOf(belowHumid));
+         amplitudeTempTextView.setText("Amplitude: " + String.valueOf(highestTemp-lowestTemp));
+         amplitudeHumidTextView.setText("Amplitude: " + String.valueOf(highestHumid-lowestHumid));
 
 
 

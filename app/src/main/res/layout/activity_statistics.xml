@@ -49,10 +49,19 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/above_limit_temp"
+            android:id="@+id/amplitude_temp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lowest_temp"
+            android:layout_marginStart="12dp"
+            android:text="Amplitude: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/above_limit_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/amplitude_temp"
             android:layout_marginStart="12dp"
             android:text="# above max temperature limit: "
             android:textSize="18sp" />
@@ -65,6 +74,8 @@
             android:layout_marginStart="12dp"
             android:text="# below min temperature limit: "
             android:textSize="18sp" />
+
+
 
 
         <TextView
@@ -109,10 +120,19 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/above_limit_humid"
+            android:id="@+id/amplitude_humid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/lowest_humid"
+            android:layout_marginStart="12dp"
+            android:text="Amplitude: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/above_limit_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/amplitude_humid"
             android:layout_marginStart="12dp"
             android:text="# above max temperature limit: "
             android:textSize="18sp" />
