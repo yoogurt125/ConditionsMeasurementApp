@@ -9,13 +9,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +21,8 @@ import androidx.preference.PreferenceManager;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -34,6 +34,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.BLUE;
+import static android.graphics.Color.RED;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     String dataAgregated;
     int[] temperature;
     int[] humidity;
-    int maxTempThreshold, minTempThreshold, maxHumidThreshold, minHumidThreshold;
+    float maxTempThreshold, minTempThreshold, maxHumidThreshold, minHumidThreshold;
+    boolean isTemperature;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         mLinechart = findViewById(R.id.linechart);
         mLinechart.setDragEnabled(true);
         mLinechart.setScaleEnabled(true);
-
 
 
         //Open Button
@@ -103,12 +107,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 parseTemperatureData(dataAgregated);
+                isTemperature=true;
             }
         });
         humidityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 parseHumidityData(dataAgregated);
+                isTemperature=false;
             }
         });
     }
@@ -206,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
     void sendData() throws IOException {
         dataAgregated = "";
         String msg = "1";
-//        msg += "\n";
         mmOutputStream.write(msg.getBytes());
         myLabel.setText("Receiving data");
     }
@@ -236,8 +241,15 @@ public class MainActivity extends AppCompatActivity {
             LineData humidityData = new LineData(humidityDataSet);
             mLinechart.zoom(3f, 1f, 1, 1);
             mLinechart.setData(humidityData);
+            mLinechart.highlightValue(null);
             mLinechart.invalidate();
             mLinechart.animateY(3000, Easing.EaseOutBack);
+            YAxis leftAxis = mLinechart.getAxisLeft();
+            leftAxis.removeAllLimitLines();
+            LimitLine maxHumidLimitLine = createLimitLine(maxHumidThreshold, 2f, BLACK, "Max allowed humiditiy");
+            LimitLine minHumidLimitLine = createLimitLine(minHumidThreshold, 2f, BLACK, "Min allowed humiditiy");
+            leftAxis.addLimitLine(maxHumidLimitLine);
+            leftAxis.addLimitLine(minHumidLimitLine);
         } else {
             Toast.makeText(this, "Device is still receiving data", Toast.LENGTH_SHORT).show();
         }
@@ -249,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
             mLinechart.setDragEnabled(true);
             mLinechart.setScaleEnabled(true);
             ArrayList<Entry> temperatureValues = new ArrayList<>();
-
 
             temperature = new int[30];
             for (int i = 0, j = 0; i < 60 && j < 30; i += 2, j++) {
@@ -263,20 +274,28 @@ public class MainActivity extends AppCompatActivity {
             LineDataSet temperatureSet = new LineDataSet(temperatureValues, "Temperature °C");
             temperatureSet.setLineWidth(3f);
             temperatureSet.setLineWidth(3f);
-            temperatureSet.setColor(Color.RED);
+            temperatureSet.setColor(RED);
             temperatureSet.setValueTextSize(15f);
             ArrayList<ILineDataSet> temperatureDataSet = new ArrayList<>();
             temperatureDataSet.add(temperatureSet);
             LineData temperatureData = new LineData(temperatureDataSet);
             mLinechart.zoom(3f, 1f, 1, 1);
             mLinechart.setData(temperatureData);
+            mLinechart.highlightValue(null);
             mLinechart.invalidate();
             mLinechart.animateY(3000, Easing.EaseOutBack);
+            YAxis leftAxis = mLinechart.getAxisLeft();
+            leftAxis.removeAllLimitLines();
+            LimitLine maxTempLimitLine = createLimitLine(maxTempThreshold, 2f, BLACK, "Max allowed temeperature");
+            LimitLine minTempLimitLine = createLimitLine(minTempThreshold, 2f, BLACK, "Min allowed temeperature");
+            leftAxis.addLimitLine(maxTempLimitLine);
+            leftAxis.addLimitLine(minTempLimitLine);
         } else {
             Toast.makeText(this, "Device is still receiving data", Toast.LENGTH_SHORT).show();
         }
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(android.view.Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -285,10 +304,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId() ){
+        switch (item.getItemId()) {
             case R.id.settings:
-                Intent preferencesIntent = new Intent(this,PreferencesActivity.class);
+                Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
                 startActivity(preferencesIntent);
+                break;
+            case R.id.statistics:
+
+                Intent statisticsIntent = new Intent(this, StatisticsActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putIntArray("TEMPERATURE", temperature);
+                bundle.putIntArray("HUMIDITY", humidity);
+                bundle.putFloat("MAXTEMP", maxTempThreshold);
+                bundle.putFloat("MINTEMP", minTempThreshold);
+                bundle.putFloat("MAXHUMID", maxHumidThreshold);
+                bundle.putFloat("MINHUMID", minHumidThreshold);
+                statisticsIntent.putExtras(bundle);
+                startActivity(statisticsIntent);
                 break;
         }
 
@@ -297,22 +329,42 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        YAxis leftAxis = mLinechart.getAxisLeft();
+        leftAxis.removeAllLimitLines();
         super.onResume();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String tempString;
-        tempString = sharedPreferences.getString("max_limit_temperature", "");
-        maxTempThreshold = Integer.parseInt(tempString);
-        tempString = sharedPreferences.getString("min_limit_temperature", "");
-        minTempThreshold = Integer.parseInt(tempString);
-        tempString = sharedPreferences.getString("max_limit_humidity", "");
-        maxHumidThreshold = Integer.parseInt(tempString);
-        tempString = sharedPreferences.getString("min_limit_humidity", "");
-        minHumidThreshold = Integer.parseInt(tempString);
+        tempString = sharedPreferences.getString("max_limit_temperature", "25");
+        maxTempThreshold = Float.parseFloat(tempString);
+        tempString = sharedPreferences.getString("min_limit_temperature", "18");
+        minTempThreshold = Float.parseFloat(tempString);
+        tempString = sharedPreferences.getString("max_limit_humidity", "70");
+        maxHumidThreshold = Float.parseFloat(tempString);
+        tempString = sharedPreferences.getString("min_limit_humidity", "35");
+        minHumidThreshold = Float.parseFloat(tempString);
+        if(isTemperature){
+            LimitLine maxTempLimitLine = createLimitLine(maxTempThreshold, 2f, BLACK, "Max allowed temeperature");
+            LimitLine minTempLimitLine = createLimitLine(minTempThreshold, 2f, BLACK, "Min allowed temeperature");
+            leftAxis.addLimitLine(maxTempLimitLine);
+            leftAxis.addLimitLine(minTempLimitLine);
+        }else{
 
+            LimitLine maxHumidLimitLine = createLimitLine(maxHumidThreshold, 2f, BLACK, "Max allowed humiditiy");
+            LimitLine minHumidLimitLine = createLimitLine(minHumidThreshold, 2f, BLACK, "Min allowed humiditiy");
+            leftAxis.addLimitLine(maxHumidLimitLine);
+            leftAxis.addLimitLine(minHumidLimitLine);
+        }
+        mLinechart.invalidate();
+    }
 
-//        minTempThreshold = Integer.parseInt(sharedPreferences.getString("min_limit_temperature", ""));
-//        maxHumidThreshold = Integer.parseInt(sharedPreferences.getString("max_limit_humidity", ""));
-//        minHumidThreshold = Integer.parseInt(sharedPreferences.getString("max_limit_humidity", ""));
+    LimitLine createLimitLine(float threshold, float width, int color, String label) {
+        LimitLine limitLine = new LimitLine(threshold, label);
+        limitLine.setLineWidth(width);
+        limitLine.setLineColor(color);
+        limitLine.enableDashedLine(10f, 20f, 0f);
+        limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        limitLine.setTextSize(10f);
+        return limitLine;
 
     }
 }

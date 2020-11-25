@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".StatisticsActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/category_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:enabled="false"
+            android:text="Temperature"
+            android:textColor="@color/teal_200"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/average_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_temperature"
+            android:layout_marginStart="12dp"
+            android:text="Average temperature: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/highest_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/average_temp"
+            android:layout_marginStart="12dp"
+            android:text="Highest temperature: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lowest_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/highest_temp"
+            android:layout_marginStart="12dp"
+            android:text="Lowest temperature: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/above_limit_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lowest_temp"
+            android:layout_marginStart="12dp"
+            android:text="# above max temperature limit: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/below_limit_temp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/above_limit_temp"
+            android:layout_marginStart="12dp"
+            android:text="# below min temperature limit: "
+            android:textSize="18sp" />
+
+
+        <TextView
+            android:id="@+id/category_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/below_limit_temp"
+            android:layout_margin="12dp"
+            android:layout_marginStart="12dp"
+
+            android:enabled="false"
+            android:text="Humidity"
+            android:textColor="@color/teal_200"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/average_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/category_humidity"
+            android:layout_marginStart="12dp"
+            android:text="Average humidity: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/highest_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/average_humid"
+            android:layout_marginStart="12dp"
+            android:text="Highest humidity: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/lowest_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/highest_humid"
+            android:layout_marginStart="12dp"
+            android:text="Lowest humidity: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/above_limit_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lowest_humid"
+            android:layout_marginStart="12dp"
+            android:text="# above max temperature limit: "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/below_limit_humid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/above_limit_humid"
+            android:layout_marginStart="12dp"
+            android:text="# below min temperature limit: "
+            android:textSize="18sp" />
+
+
+    </RelativeLayout>
+</ScrollView>
