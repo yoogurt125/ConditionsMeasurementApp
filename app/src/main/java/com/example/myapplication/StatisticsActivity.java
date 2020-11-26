@@ -134,6 +134,5 @@ public class StatisticsActivity extends AppCompatActivity {
          amplitudeHumidTextView.setText("Amplitude: " + String.valueOf(highestHumid-lowestHumid));
 
 
-
     }
 }

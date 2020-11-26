@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,11 +37,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import static android.graphics.Color.BLACK;
-import static android.graphics.Color.BLUE;
 import static android.graphics.Color.RED;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    DatabaseHelper mDatabaseHelper;
+
+
     TextView myLabel;
     LineChart mLinechart;
     BluetoothAdapter mBluetoothAdapter;
@@ -64,12 +68,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.app_bar));
-
+        mDatabaseHelper = new DatabaseHelper(this);
 
         Button openButton = (Button) findViewById(R.id.open);
         Button temperatureButton = (Button) findViewById(R.id.temperature_button);
         Button humidityButton = (Button) findViewById(R.id.humidity_button);
         Button sendButton = (Button) findViewById(R.id.send);
+        Button saveButton = findViewById(R.id.save);
         myLabel = (TextView) findViewById(R.id.label);
 
 
@@ -77,7 +82,13 @@ public class MainActivity extends AppCompatActivity {
         mLinechart.setDragEnabled(true);
         mLinechart.setScaleEnabled(true);
 
-
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String string = "dupa";
+                saveChartData(string);
+            }
+        });
         //Open Button
         openButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -107,14 +118,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 parseTemperatureData(dataAgregated);
-                isTemperature=true;
+                isTemperature = true;
             }
         });
         humidityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 parseHumidityData(dataAgregated);
-                isTemperature=false;
+                isTemperature = false;
             }
         });
     }
@@ -322,6 +333,9 @@ public class MainActivity extends AppCompatActivity {
                 statisticsIntent.putExtras(bundle);
                 startActivity(statisticsIntent);
                 break;
+            case R.id.saved:
+                Intent savedChartsIntent = new Intent(this, SavedChartsActivity.class);
+                startActivity(savedChartsIntent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -342,12 +356,12 @@ public class MainActivity extends AppCompatActivity {
         maxHumidThreshold = Float.parseFloat(tempString);
         tempString = sharedPreferences.getString("min_limit_humidity", "35");
         minHumidThreshold = Float.parseFloat(tempString);
-        if(isTemperature){
+        if (isTemperature) {
             LimitLine maxTempLimitLine = createLimitLine(maxTempThreshold, 2f, BLACK, "Max allowed temeperature");
             LimitLine minTempLimitLine = createLimitLine(minTempThreshold, 2f, BLACK, "Min allowed temeperature");
             leftAxis.addLimitLine(maxTempLimitLine);
             leftAxis.addLimitLine(minTempLimitLine);
-        }else{
+        } else {
 
             LimitLine maxHumidLimitLine = createLimitLine(maxHumidThreshold, 2f, BLACK, "Max allowed humiditiy");
             LimitLine minHumidLimitLine = createLimitLine(minHumidThreshold, 2f, BLACK, "Min allowed humiditiy");
@@ -366,6 +380,9 @@ public class MainActivity extends AppCompatActivity {
         limitLine.setTextSize(10f);
         return limitLine;
 
+    }
+    public void saveChartData(String newEntry) {
+        mDatabaseHelper.addData(newEntry);
     }
 }
 

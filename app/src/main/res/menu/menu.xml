@@ -3,14 +3,21 @@
 
     <item
         android:id="@+id/settings"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
         android:title="Settings"
         app:showAsAction="never"
         android:visible="true" />
     <item
+        android:id="@+id/saved"
+        android:orderInCategory="2"
+        android:title="Saved"
+        app:showAsAction="never"
+        android:visible="true" />
+
+    <item
         android:id="@+id/statistics"
         android:title="Statistics"
-        android:orderInCategory="99"
+        android:orderInCategory="1"
         app:showAsAction="never"
         android:visible="true"/>
 </menu>
