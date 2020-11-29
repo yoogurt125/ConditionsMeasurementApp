@@ -238,8 +238,6 @@ public class MainActivity extends AppCompatActivity {
             humiditySet.setLineWidth(3f);
             humiditySet.setColor(Color.BLUE);
             humiditySet.setValueTextSize(15f);
-            humiditySet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-
             ArrayList<ILineDataSet> humidityDataSet = new ArrayList<>();
             humidityDataSet.add(humiditySet);
             LineData humidityData = new LineData(humidityDataSet);
@@ -279,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
             temperatureSet.setLineWidth(3f);
             temperatureSet.setColor(RED);
             temperatureSet.setValueTextSize(15f);
-            temperatureSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             ArrayList<ILineDataSet> temperatureDataSet = new ArrayList<>();
             temperatureDataSet.add(temperatureSet);
             LineData temperatureData = new LineData(temperatureDataSet);
