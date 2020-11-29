@@ -44,17 +44,16 @@
             android:layout_width="wrap_content"
             android:layout_marginHorizontal="2dp"
             android:id="@+id/send"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Download data"
             />
         <Button
-            android:drawableRight="@android:drawable/ic_menu_save"
             android:layout_width="wrap_content"
             android:layout_marginHorizontal="2dp"
             android:id="@+id/save"
             android:text="save"
-            android:layout_weight="0"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
 
             />

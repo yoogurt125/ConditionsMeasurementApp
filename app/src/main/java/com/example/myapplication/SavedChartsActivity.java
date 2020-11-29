@@ -1,7 +1,11 @@
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -23,17 +27,38 @@ public class SavedChartsActivity extends AppCompatActivity {
         setContentView(R.layout.saved_charts);
         mlistView = findViewById(R.id.list_view_saved);
         mDatabaseHelper = new DatabaseHelper(this);
+
+        populateListView();
     }
 
     private void populateListView() {
         Cursor data = mDatabaseHelper.getData();
         ArrayList<String> listData = new ArrayList<>();
         while (data.moveToNext()) {
-            listData.add(data.getString(1));
+            listData.add(data.getString(0));
         }
 
         ListAdapter listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
                 listData);
         mlistView.setAdapter(listAdapter);
+
+        mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                String date = adapterView.getItemAtPosition(position).toString();
+                Log.d("dupa", date);
+                String data="";
+                Cursor cursor = mDatabaseHelper.getDataFromDate(date);
+                while(cursor.moveToNext()) {
+                    data = cursor.getString(cursor.getColumnIndex("data"));
+                }
+                Intent historyChartIntent = new Intent(SavedChartsActivity.this, HistoryChartActivity.class);
+                historyChartIntent.putExtra("date", date);
+                historyChartIntent.putExtra("data", data);
+                startActivity(historyChartIntent);
+
+
+            }
+        });
     }
 }

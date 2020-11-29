@@ -22,6 +22,7 @@
         <activity android:name=".PreferencesActivity"></activity>
         <activity android:name=".StatisticsActivity"></activity>
         <activity android:name=".SavedChartsActivity"></activity>
+        <activity android:name=".HistoryChartActivity"></activity>
     </application>
 
 </manifest>

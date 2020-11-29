@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     int readBufferPosition;
     volatile boolean stopWorker;
     int numBytes;
-    String dataAgregated;
+    String dataAggregated;
     int[] temperature;
     int[] humidity;
     float maxTempThreshold, minTempThreshold, maxHumidThreshold, minHumidThreshold;
@@ -85,8 +86,11 @@ public class MainActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String string = "dupa";
-                saveChartData(string);
+                String data = Arrays.toString(temperature) + Arrays.toString(humidity);
+
+                String date = java.text.DateFormat.getDateTimeInstance().format(new Date());
+                Log.d("dupa", date);
+                saveChartData(data, date);
             }
         });
         //Open Button
@@ -117,14 +121,14 @@ public class MainActivity extends AppCompatActivity {
         temperatureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parseTemperatureData(dataAgregated);
+                parseTemperatureData(dataAggregated);
                 isTemperature = true;
             }
         });
         humidityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parseHumidityData(dataAgregated);
+                parseHumidityData(dataAggregated);
                 isTemperature = false;
             }
         });
@@ -168,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
 
     void beginListenForData() {
         final Handler handler = new Handler();
-        final byte delimiter = 10; //This is the ASCII code for a newline character
 
         stopWorker = false;
         readBufferPosition = 0;
@@ -187,28 +190,16 @@ public class MainActivity extends AppCompatActivity {
                                 sb.append(String.format("%02x", b));
                             String data = sb.toString();
 
-//                            for (int i = 0; i < bytesAvailable; i++) {
-//                                byte b = packetBytes[i];
-//                                if (b == delimiter) {
-//                                    byte[] encodedBytes = new byte[readBufferPosition];
-//                                    System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-//                                    final String data = new String(encodedBytes);
-//                                    readBufferPosition = 0;
-//
                             handler.post(new Runnable() {
                                 public void run() {
 
 
-                                    dataAgregated += data;
+                                    dataAggregated += data;
                                     myLabel.setText("Data Received.");
-                                    Log.d("data_temp", dataAgregated);
+                                    Log.d("data_temp", dataAggregated);
 
                                 }
                             });
-//                                } else {
-//                                    readBuffer[readBufferPosition++] = b;
-//                                }
-//                            }
                         }
                     } catch (IOException ex) {
                         stopWorker = true;
@@ -221,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void sendData() throws IOException {
-        dataAgregated = "";
+        dataAggregated = "";
         String msg = "1";
         mmOutputStream.write(msg.getBytes());
         myLabel.setText("Receiving data");
@@ -235,8 +226,8 @@ public class MainActivity extends AppCompatActivity {
 
             humidity = new int[30];
             for (int i = 60, j = 0; i < 120 && j < 30; i += 2, j++) {
-                String subTemperature = s.substring(i, i + 2);
-                humidity[j] = Integer.parseInt(subTemperature, 16);
+                String subHumidity = s.substring(i, i + 2);
+                humidity[j] = Integer.parseInt(subHumidity, 16);
             }
 
             for (int i = 0; i < humidity.length; i++) {
@@ -247,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
             humiditySet.setLineWidth(3f);
             humiditySet.setColor(Color.BLUE);
             humiditySet.setValueTextSize(15f);
+            humiditySet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+
             ArrayList<ILineDataSet> humidityDataSet = new ArrayList<>();
             humidityDataSet.add(humiditySet);
             LineData humidityData = new LineData(humidityDataSet);
@@ -284,9 +277,9 @@ public class MainActivity extends AppCompatActivity {
 
             LineDataSet temperatureSet = new LineDataSet(temperatureValues, "Temperature °C");
             temperatureSet.setLineWidth(3f);
-            temperatureSet.setLineWidth(3f);
             temperatureSet.setColor(RED);
             temperatureSet.setValueTextSize(15f);
+            temperatureSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
             ArrayList<ILineDataSet> temperatureDataSet = new ArrayList<>();
             temperatureDataSet.add(temperatureSet);
             LineData temperatureData = new LineData(temperatureDataSet);
@@ -371,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         mLinechart.invalidate();
     }
 
-    LimitLine createLimitLine(float threshold, float width, int color, String label) {
+    public LimitLine createLimitLine(float threshold, float width, int color, String label) {
         LimitLine limitLine = new LimitLine(threshold, label);
         limitLine.setLineWidth(width);
         limitLine.setLineColor(color);
@@ -381,8 +374,17 @@ public class MainActivity extends AppCompatActivity {
         return limitLine;
 
     }
-    public void saveChartData(String newEntry) {
-        mDatabaseHelper.addData(newEntry);
+
+    public void saveChartData(String data, String date) {
+        boolean insertData = mDatabaseHelper.addData(data, date);
+
+
+        if (insertData) {
+            Toast.makeText(this, "data saved", Toast.LENGTH_SHORT);
+        } else {
+            Toast.makeText(this, "not saved", Toast.LENGTH_SHORT);
+        }
+
     }
 }
 
