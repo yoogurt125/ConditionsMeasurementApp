@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -58,6 +60,36 @@ public class SavedChartsActivity extends AppCompatActivity {
                 startActivity(historyChartIntent);
 
 
+            }
+        });
+        mlistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                new AlertDialog.Builder( SavedChartsActivity.this )
+                        .setTitle( "Delete Entry" )
+                        .setMessage( "Do you want to delete?" )
+                        .setPositiveButton( "Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                String date = adapterView.getItemAtPosition(position).toString();
+                                String data="";
+                                Cursor cursor = mDatabaseHelper.getDataFromDate(date);
+                                while(cursor.moveToNext()) {
+                                    data = cursor.getString(cursor.getColumnIndex("data"));
+                                }
+                                mDatabaseHelper.deleteData(date,data);
+                                populateListView();
+                                mlistView.invalidate();
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        } )
+                        .show();
+                return true;
             }
         });
     }

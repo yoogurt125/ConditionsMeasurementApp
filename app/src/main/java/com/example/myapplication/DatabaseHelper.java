@@ -64,5 +64,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public void deleteData(String date, String data){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_NAME + " WHERE " + COL2 + " = '" + date + "' AND " +
+                COL3 + "='" + data + "'";
+        db.execSQL(query);
+    }
+
 
 }
