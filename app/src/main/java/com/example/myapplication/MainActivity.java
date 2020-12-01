@@ -26,6 +26,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     String dataAggregated;
     int[] temperature;
     int[] humidity;
+    String[] xAxisHours;
     float maxTempThreshold, minTempThreshold, maxHumidThreshold, minHumidThreshold;
     boolean isTemperature;
 
@@ -113,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
                     sendData();
                     temperatureButton.setEnabled(true);
                     humidityButton.setEnabled(true);
+                    Calendar calendar = Calendar.getInstance();
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    setXAxisOrder(hour);
+                    Log.d("dupa", Arrays.toString(xAxisHours));
                 } catch (IOException ex) {
                 }
             }
@@ -224,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Entry> humidityValues = new ArrayList<>();
 
-            humidity = new int[30];
-            for (int i = 60, j = 0; i < 120 && j < 30; i += 2, j++) {
+            humidity = new int[24];
+            for (int i = 48, j = 0; i < 96 && j < 24; i += 2, j++) {
                 String subHumidity = s.substring(i, i + 2);
                 humidity[j] = Integer.parseInt(subHumidity, 16);
             }
@@ -234,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 humidityValues.add(new Entry(i, humidity[i]));
             }
 
+
             LineDataSet humiditySet = new LineDataSet(humidityValues, "Humidity %");
             humiditySet.setLineWidth(3f);
             humiditySet.setColor(Color.BLUE);
@@ -241,6 +249,8 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<ILineDataSet> humidityDataSet = new ArrayList<>();
             humidityDataSet.add(humiditySet);
             LineData humidityData = new LineData(humidityDataSet);
+            mLinechart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisHours));
+            mLinechart.getXAxis().setGranularity(1f);
             mLinechart.zoom(3f, 1f, 1, 1);
             mLinechart.setData(humidityData);
             mLinechart.highlightValue(null);
@@ -264,14 +274,15 @@ public class MainActivity extends AppCompatActivity {
             mLinechart.setScaleEnabled(true);
             ArrayList<Entry> temperatureValues = new ArrayList<>();
 
-            temperature = new int[30];
-            for (int i = 0, j = 0; i < 60 && j < 30; i += 2, j++) {
+            temperature = new int[24];
+            for (int i = 0, j = 0; i < 48 && j < 24; i += 2, j++) {
                 String subTemperature = s.substring(i, i + 2);
                 temperature[j] = Integer.parseInt(subTemperature, 16);
             }
             for (int i = 0; i < temperature.length; i++) {
                 temperatureValues.add(new Entry(i, temperature[i]));
             }
+
 
             LineDataSet temperatureSet = new LineDataSet(temperatureValues, "Temperature °C");
             temperatureSet.setLineWidth(3f);
@@ -280,6 +291,9 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<ILineDataSet> temperatureDataSet = new ArrayList<>();
             temperatureDataSet.add(temperatureSet);
             LineData temperatureData = new LineData(temperatureDataSet);
+
+            mLinechart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(xAxisHours));
+            mLinechart.getXAxis().setGranularity(1f);
             mLinechart.zoom(3f, 1f, 1, 1);
             mLinechart.setData(temperatureData);
             mLinechart.highlightValue(null);
@@ -382,6 +396,17 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "not saved", Toast.LENGTH_SHORT);
         }
 
+    }
+
+    void setXAxisOrder(int x) {
+        xAxisHours = new String[24];
+        for (int i = 23; i >= 0; i--) {
+            xAxisHours[i] = String.valueOf(x);
+            x = x - 1;
+            if (x <= 0) {
+                x = x + 24;
+            }
+        }
     }
 }
 

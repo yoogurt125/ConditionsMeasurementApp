@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
@@ -18,7 +17,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 
-import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
 
 public class HistoryChartActivity extends AppCompatActivity {
@@ -41,7 +39,7 @@ public class HistoryChartActivity extends AppCompatActivity {
         data = data.replace(",", "")
                 .replace("[", "")
                 .replace("]", "")
-                .replace(" ","")
+                .replace(" ", "")
                 .trim();
         Log.d("dupa", data);
 
@@ -102,13 +100,5 @@ public class HistoryChartActivity extends AppCompatActivity {
         mLinechartHumid.animateY(1500, Easing.EaseOutBack);
         YAxis leftAxisHumid = mLinechartHumid.getAxisLeft();
         leftAxisHumid.removeAllLimitLines();
-//        LimitLine maxHumidLimitLine = createLimitLine(maxHumidThreshold, 2f, BLACK, "Max allowed humiditiy");
-//        LimitLine minHumidLimitLine = createLimitLine(minHumidThreshold, 2f, BLACK, "Min allowed humiditiy");
-//        leftAxis.addLimitLine(maxHumidLimitLine);
-//        leftAxis.addLimitLine(minHumidLimitLine);
-//        LimitLine maxTempLimitLine = createLimitLine(maxTempThreshold, 2f, BLACK, "Max allowed temeperature");
-//        LimitLine minTempLimitLine = createLimitLine(minTempThreshold, 2f, BLACK, "Min allowed temeperature");
-//        leftAxis.addLimitLine(maxTempLimitLine);
-//        leftAxis.addLimitLine(minTempLimitLine);
     }
 }
